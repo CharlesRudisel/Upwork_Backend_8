@@ -24,6 +24,8 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -39,12 +41,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
+        http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/authenticate", "/auth/register", "/").permitAll()
                         .anyRequest().authenticated()
                 )
+                .cors(withDefaults())
                 .requiresChannel(channel -> channel
                         .anyRequest().requiresSecure()
                 )
@@ -52,8 +55,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
     @Bean
@@ -79,9 +82,11 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://market-star-portal-frontend-git-main-theme-team1.vercel.app/"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://localhost:4200", "https://localhost:8443", "https://market-star-portal-frontend-git-main-theme-team1.vercel.app/"));
+
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.addExposedHeader("Authorization");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
