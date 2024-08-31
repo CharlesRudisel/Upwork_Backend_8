@@ -1,7 +1,6 @@
 package com.example.Upwork_Backend_8.security.services;
 
-
-
+import com.example.Upwork_Backend_8.security.services.CustomUserDetails;
 import com.example.Upwork_Backend_8.users.entity.UserInfo;
 import com.example.Upwork_Backend_8.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

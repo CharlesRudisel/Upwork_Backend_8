@@ -1,7 +1,6 @@
 package com.example.Upwork_Backend_8.assignments.entity;
 
-
-//import com.example.Upwork_Backend_8.grades.entity.Grade;
+import com.example.Upwork_Backend_8.grades.entity.Grade;
 import com.example.Upwork_Backend_8.users.entity.UserInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -28,13 +27,14 @@ public class Assignment {
     @Column(name = "status")
     private String status; // Available, Claimed, Pending, Completed
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
-//    @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL)
-//    @JsonManagedReference
-//    private Grade grade;
+    @OneToOne(mappedBy = "assignment", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Grade grade;
 
     // Getters and Setters
 
@@ -78,14 +78,14 @@ public class Assignment {
         this.user = user;
     }
 
-//    public Grade getGrade() {
-//        return grade;
-//    }
-//
-//    public void setGrade(Grade grade) {
-//        this.grade = grade;
-//        grade.setAssignment(this); // Ensures bidirectional consistency
-//    }
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+        grade.setAssignment(this); // Ensures bidirectional consistency
+    }
 
     public long getId() {
         return id;
@@ -93,5 +93,8 @@ public class Assignment {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void getUser_id(Long id) {
     }
 }

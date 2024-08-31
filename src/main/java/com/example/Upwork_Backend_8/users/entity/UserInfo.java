@@ -1,7 +1,5 @@
 package com.example.Upwork_Backend_8.users.entity;
 
-
-
 import com.example.Upwork_Backend_8.security.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;

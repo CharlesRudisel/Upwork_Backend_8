@@ -10,4 +10,3 @@ public record AuthResponse(
         String roles         // Added roles
 ) {
 }
-

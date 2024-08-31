@@ -1,6 +1,5 @@
 package com.example.Upwork_Backend_8.assignments.service;
 
-
 import com.example.Upwork_Backend_8.assignments.entity.Assignment;
 import com.example.Upwork_Backend_8.assignments.repository.AssignmentRepository;
 import com.example.Upwork_Backend_8.users.entity.UserInfo;
@@ -19,7 +18,7 @@ public class AssignmentService {
 
     @Autowired
     private UserRepository userRepository;
-
+    
     public String updateAssignmentStatus(Long assignmentId, String status, Long userId) {
         Optional<Assignment> assignmentOptional = assignmentRepository.findById(assignmentId);
         Optional<UserInfo> userOptional = userRepository.findById(userId);
@@ -63,4 +62,3 @@ public class AssignmentService {
         assignmentRepository.deleteById(id);
     }
 }
-

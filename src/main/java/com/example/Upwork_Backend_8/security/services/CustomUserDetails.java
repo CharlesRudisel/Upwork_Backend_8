@@ -1,6 +1,5 @@
 package com.example.Upwork_Backend_8.security.services;
 
-
 import com.example.Upwork_Backend_8.security.enums.Role;
 import com.example.Upwork_Backend_8.users.entity.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,4 +61,3 @@ public class CustomUserDetails extends UserInfo implements UserDetails {
     }
 
 }
-

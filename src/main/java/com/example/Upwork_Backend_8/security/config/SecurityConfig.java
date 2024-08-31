@@ -1,5 +1,6 @@
 package com.example.Upwork_Backend_8.security.config;
 
+import com.example.Upwork_Backend_8.security.config.JwtAuthenticationFilter;
 import com.example.Upwork_Backend_8.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,11 +21,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -41,22 +39,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/authenticate", "/auth/register", "/").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .cors(withDefaults())
-                .requiresChannel(channel -> channel
-                        .anyRequest().requiresSecure()
-                )
-                .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())  // Allow all requests without authentication
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
@@ -78,16 +67,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://localhost:4200", "https://localhost:8443", "https://market-star-portal-frontend-git-main-theme-team1.vercel.app/"));
-
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addExposedHeader("Authorization");
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://market-star-portal-frontend.vercel.app"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("*"));
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return source;
     }
 }

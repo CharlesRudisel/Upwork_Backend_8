@@ -1,6 +1,5 @@
 package com.example.Upwork_Backend_8.security.config;
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,7 +40,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS512)
                 .compact();
     }

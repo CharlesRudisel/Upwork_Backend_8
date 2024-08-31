@@ -1,7 +1,5 @@
 package com.example.Upwork_Backend_8.users.services;
 
-
-
 import com.example.Upwork_Backend_8.users.entity.UserInfo;
 import com.example.Upwork_Backend_8.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,4 +37,3 @@ public class UserService {
         return userRepository.findById(id);
     }
 }
-

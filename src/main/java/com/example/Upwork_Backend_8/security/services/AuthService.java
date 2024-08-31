@@ -1,6 +1,5 @@
 package com.example.Upwork_Backend_8.security.services;
 
-
 import com.example.Upwork_Backend_8.security.config.JwtService;
 import com.example.Upwork_Backend_8.security.dto.AuthRequest;
 import com.example.Upwork_Backend_8.security.dto.AuthResponse;
@@ -63,4 +62,3 @@ public class AuthService {
                 .build());
     }
 }
-

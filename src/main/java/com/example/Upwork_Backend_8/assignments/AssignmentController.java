@@ -2,8 +2,14 @@ package com.example.Upwork_Backend_8.assignments;
 
 
 import com.example.Upwork_Backend_8.assignments.entity.Assignment;
+import com.example.Upwork_Backend_8.assignments.repository.AssignmentRepository;
 import com.example.Upwork_Backend_8.assignments.service.AssignmentService;
+import com.example.Upwork_Backend_8.assignments.specification.AssignmentSpecification;
+import com.example.Upwork_Backend_8.assignments.specification.SearchCriteria;
+import com.example.Upwork_Backend_8.assignments.specification.SearchOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +25,15 @@ public class AssignmentController {
     @Autowired
     private AssignmentService assignmentService;
 
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+
     @PutMapping("/available/{assignmentId}/status/{status}/{userId}")
     public ResponseEntity<String> updateAssignmentStatus(@PathVariable Long assignmentId, @PathVariable String status, @PathVariable Long userId) {
         String result = assignmentService.updateAssignmentStatus(assignmentId, status, userId);
+        System.out.println("result : "+result);
         if (result.equals("Assignment status updated successfully")) {
+            System.out.println("redewewq : "+result);
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.badRequest().body(result);
@@ -49,11 +60,19 @@ public class AssignmentController {
     @GetMapping("/user/progress/{userId}")
     public ResponseEntity<List<Assignment>> getInProgressAssignmentsByUserId(@PathVariable Long userId) {
         List<Assignment> assignments = assignmentService.getAssignmentsByUserId(userId); // Gets assignments by userId
-        // Filter assignments to include only those with status 'In Progress'
+        // Filter assignments to include only those with status 'In Progress', regardless of spaces
         List<Assignment> availableAssignments = assignments.stream()
-                .filter(assignment -> "In Progress".equalsIgnoreCase(assignment.getStatus()))
+                .filter(assignment -> normalizeStatus(assignment.getStatus()).equalsIgnoreCase("inprogress"))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(availableAssignments);
+    }
+
+    // Helper method to normalize status by removing spaces and converting to lowercase
+    private String normalizeStatus(String status) {
+        if (status == null) {
+            return "";
+        }
+        return status.replaceAll("\\s+", "").toLowerCase();
     }
 
 
@@ -135,5 +154,31 @@ public class AssignmentController {
         assignmentService.deleteAssignment(id);
         return ResponseEntity.noContent().build();
     }
-}
 
+    @GetMapping("/filtered/completed")
+    public Page<Assignment> getFilteredCompletedAssignments(
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) String clientName,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String date,
+            Pageable pageable
+    ){
+        AssignmentSpecification specs = new AssignmentSpecification();
+
+        if(searchQuery != null && !searchQuery.isEmpty()){
+
+            specs.addCriteria(new SearchCriteria("blogTopic" , SearchOperation.LIKE , searchQuery));
+        }
+        if(clientName != null && !clientName.isEmpty()){
+
+        }
+        if(author != null && !author.isEmpty()){
+
+        }
+        if(date != null && !date.isEmpty()){
+
+        }
+
+        return assignmentRepository.findAll(specs,pageable);
+    }
+}
